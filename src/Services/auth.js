@@ -13,9 +13,9 @@ const certPath = fs.readFileSync(
 
 const password = "qwerty123";
 
-async function createAuth() {
+async function createAuth(userIP) {
   const data = JSON.stringify({
-    endUserIp: "83.254.22.249",
+    endUserIp:userIP,
     /* V6 reques pinCode */
     requirement: { pinCode: true },
   });
