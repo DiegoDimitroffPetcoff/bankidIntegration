@@ -2,11 +2,12 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
-const bankidApiUrlV5 = "https://appapi2.test.bankid.com/rp/v5.1/collect";
-const bankidApiUrlV6 = "https://appapi2.test.bankid.com/rp/v6.0/collect";
+const bankidApiUrlV5 = "https://appapi2.test.bankid.com/rp/v5.1/sign";
+const bankidApiUrlV6 = "https://appapi2.test.bankid.com/rp/v6.0/sign";
+const base64 = require('base-64');
 
 const certPath = fs.readFileSync(
-  path.join(__dirname, "./FPTestcert5_20240610.p12")
+  path.join(__dirname, "../certificates/FPTestcert5_20240610.p12")
 );
 
 const password = "qwerty123";
@@ -17,16 +18,25 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-async function collect(bId) {
+async function signController(bId, userIP) {
   try {
     if (!bId) {
       return "no logged";
     }
-
+    const userVisibleData = "Este es un ejemplo de texto para ser firmado";
+    const userVisibleDataEncoded = base64.encode(userVisibleData);
     const { orderRef, autoStartToken, qrStartToken, qrStartSecret } = bId;
+    console.log("orderRef",orderRef);
+    console.log("userVisibleDataEncoded",userVisibleDataEncoded);
+    
 
     const requestBody = {
+      endUserIp: userIP,
       orderRef: orderRef,
+      userVisibleData: userVisibleDataEncoded,
+      requirement: {
+        risk: "low", 
+      },
     };
 
     const response = await axios.post(bankidApiUrlV6, requestBody, {
@@ -45,4 +55,4 @@ async function collect(bId) {
     throw error;
   }
 }
-module.exports = collect;
+module.exports = signController;

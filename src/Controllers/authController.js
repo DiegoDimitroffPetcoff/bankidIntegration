@@ -8,12 +8,12 @@ const bankidApiUrlV5 = "https://appapi2.test.bankid.com/rp/v5.1/auth";
 const bankidApiUrlV6 = "https://appapi2.test.bankid.com/rp/v6.0/auth";
 
 const certPath = fs.readFileSync(
-  path.join(__dirname, "./FPTestcert5_20240610.p12")
+  path.join(__dirname, "../certificates/FPTestcert5_20240610.p12")
 );
 
 const password = "qwerty123";
 
-async function createAuth(userIP) {
+async function authController(userIP) {
   const data = JSON.stringify({
     endUserIp:userIP,
     /* V6 reques pinCode */
@@ -46,4 +46,4 @@ async function createAuth(userIP) {
   }
 }
 
-module.exports = createAuth;
+module.exports = authController;
